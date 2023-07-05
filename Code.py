@@ -2,7 +2,7 @@ import skmeans
 import os
 
 
-def get_input(path):
+def get_txt_input(path):
     info_matrix = []
     file_names = []
     for filename in os.listdir(path):
@@ -18,13 +18,27 @@ def get_input(path):
                 
     return info_matrix, file_names
 
+def get_csv_input(path):
+    info_matrix = []
+    file_names = []
+    # open and read csv file
+    with open(path, 'r') as file:
+        for line in file:
+            row_list = []
+            for item in line.split(',')[1:]:
+                row_list.append(float(item))
+            info_matrix.append(row_list)
+            file_names.append(line.split(',')[0])
+
+    return info_matrix, file_names
+
 
 def main():
 
-    path = 'embedding/'
     no_iters = 10
 
-    info_matrix, file_names = get_input(path=path)
+    info_matrix, file_names = get_csv_input(path='embedding/output55.csv')
+    # info_matrix, file_names = get_txt_input(path='embedding/')
 
     kmeans_inst = skmeans.SKMeans(no_clusters=len(info_matrix), iters=no_iters)
     kmeans_inst.fit(info_matrix, two_pass=True)
