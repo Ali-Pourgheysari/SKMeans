@@ -92,7 +92,8 @@ class SKMeans:
             RETURNS: None
 
         '''
-        input_matrix = input_matrix/norm(input_matrix,axis=1)
+        row_norms = np.linalg.norm(input_matrix, axis=1)  # Calculate Euclidean norm along each row
+        input_matrix = input_matrix / row_norms[:, np.newaxis]
 
         if two_pass:
             self.sample_kmeans(input_matrix)
