@@ -1,5 +1,4 @@
 import numpy as np 
-import random
 from scipy.sparse import issparse 
 from numpy.linalg.linalg import norm
 from numpy.random import randint
