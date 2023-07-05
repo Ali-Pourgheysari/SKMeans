@@ -33,7 +33,7 @@ class SKMeans:
             raise ValueError("Number of dimensions in input samples and centres should be same")
         prev_distance = 0
         input_seq = np.arange(input_samples)
-        for i in xrange(self.iters):
+        for i in range(self.iters):
             self.distances = input_matrix.dot(self.centres.T)
             if issparse(self.distances):
                 self.distances = self.distances.toarray()
@@ -42,10 +42,10 @@ class SKMeans:
             avg_distance = self.distances.mean()
             try:
                 if (1 - delta) * prev_distance <= avg_distance <= prev_distance: break
-            except Exception, e:
+            except Exception:
                 continue
             prev_distance = avg_distance
-            for label in xrange(self.no_clusters):
+            for label in range(self.no_clusters):
                 indexes = np.where(self.labels == label)[0]
                 if len(indexes) > 0:
                     self.centres[label] = input_matrix[indexes].mean(axis=0)
