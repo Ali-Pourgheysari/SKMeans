@@ -1,6 +1,8 @@
-import skmeans
-import os
 import json
+import os
+
+import skmeans
+
 
 def get_txt_input(path):
     info_matrix = []
