@@ -65,6 +65,7 @@ def save_in_txt(path, cluster_dict):
     with open(path, 'w') as file:
         file.write(json_str)
 
+
 def main():
 
     no_iters = 10
@@ -84,6 +85,7 @@ def main():
 
     for key in new_cluster_dict:
         print(key, new_cluster_dict[key])
+
 
 if __name__ == '__main__':
     main()
