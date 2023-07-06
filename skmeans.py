@@ -74,7 +74,7 @@ class SKMeans:
         '''
         input_points, no_dimensions = input_matrix.shape
         no_samples = max(2*np.sqrt(input_points), 10*self.no_clusters)
-        sampled_input = self.sample_centres(input_matrix, no_samples)
+        sampled_input = self.sample_centres(input_matrix, int(no_samples))
         self.centres = self.sample_centres(input_matrix, self.no_clusters)
         self.run_kmeans(sampled_input)
         self.run_kmeans(input_matrix)

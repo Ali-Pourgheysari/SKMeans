@@ -58,21 +58,21 @@ def organizing_clusters(labels, file_names):
 
 
 def save_in_txt(path, cluster_dict):
-    # Convert dictionary to JSON string
-    json_str = json.dumps(cluster_dict)
 
-    # Write JSON string to file
-    with open(path, 'w') as file:
-        file.write(json_str)
+    for cluster_key, cluster_val in cluster_dict.items():
+        # Convert dictionary to JSON string
+        json_str = json.dumps(cluster_val)
+        with open(f'{path}_{cluster_key}.txt', 'w') as file:
+            file.write(json_str)
 
 
 def main():
 
     no_iters = 10
-    no_clusters = 50
+    no_clusters = 10
 
-    info_matrix, file_names = get_csv_input(path='embedding/output55.csv')
-    # info_matrix, file_names = get_txt_input(path='embedding/')
+    # info_matrix, file_names = get_csv_input(path='embedding/output55.csv')
+    info_matrix, file_names = get_txt_input(path='embedding/')
 
     kmeans_inst = skmeans.SKMeans(no_clusters=no_clusters, iters=no_iters)
     kmeans_inst.fit(info_matrix, two_pass=True)
@@ -81,7 +81,7 @@ def main():
 
     new_cluster_dict = organizing_clusters(labels, file_names)
     
-    # save_in_txt(path='clustering_output.txt', cluster_dict=new_cluster_dict)
+    save_in_txt(path='cluster_output/cluster', cluster_dict=new_cluster_dict)
 
     for key in new_cluster_dict:
         print(key, new_cluster_dict[key])
