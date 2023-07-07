@@ -3,10 +3,12 @@ import os
 
 import skmeans
 
-
+#  Function to read input from txt files
 def get_txt_input(path):
     info_matrix = []
     file_names = []
+
+    # read all txt files in the path
     for filename in os.listdir(path):
         if filename.endswith('.txt'):
             file_names.append(filename)
@@ -20,10 +22,11 @@ def get_txt_input(path):
                 
     return info_matrix, file_names
 
-
+# Function to read input from csv files
 def get_csv_input(path):
     info_matrix = []
     file_names = []
+    
     # open and read csv file
     with open(path, 'r') as file:
         for line in file:
@@ -35,7 +38,7 @@ def get_csv_input(path):
 
     return info_matrix, file_names
 
-
+# Function to organize clusters
 def organizing_clusters(labels, file_names):
     # create dictionary of clusters
     cluster_dict = {}
@@ -49,14 +52,15 @@ def organizing_clusters(labels, file_names):
     # sort keys
     cluster_dict = {k: v for k, v in sorted(cluster_dict.items(), key=lambda item: item[0])}
     
-    # organize keys
+    # organize keys in a way that they start from 0 and go up to the number of clusters
     new_cluster_dict = {}
     for i, (key, value) in enumerate(cluster_dict.items()):
         new_cluster_dict[i] =  value
 
     return new_cluster_dict
 
-
+# Function to save clusters in txt files
+# Eache cluster is saved in a separate txt file
 def save_in_txt(path, cluster_dict):
 
     for cluster_key, cluster_val in cluster_dict.items():
@@ -74,7 +78,10 @@ def main():
     # info_matrix, file_names = get_csv_input(path='embedding/output55.csv')
     info_matrix, file_names = get_txt_input(path='embedding/')
 
+    # create an instance of SKMeans class
     kmeans_inst = skmeans.SKMeans(no_clusters=no_clusters, iters=no_iters)
+
+    # fit the model
     kmeans_inst.fit(info_matrix, two_pass=True)
 
     labels = kmeans_inst.labels
