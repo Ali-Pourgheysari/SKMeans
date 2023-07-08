@@ -27,13 +27,13 @@ class SKMeans:
                 None
         '''
         input_samples, input_dimensions = input_matrix.shape
-        no_centres, centre_dimensions = self.centres.shape
+        no_centers, centre_dimensions = self.centers.shape
         if input_dimensions != centre_dimensions:
-            raise ValueError("Number of dimensions in input samples and centres should be same")
+            raise ValueError("Number of dimensions in input samples and centers should be same")
         prev_distance = 0
         input_seq = np.arange(input_samples)
         for i in range(self.iters):
-            self.distances = input_matrix.dot(self.centres.T)
+            self.distances = input_matrix.dot(self.centers.T)
             if issparse(self.distances):
                 self.distances = self.distances.toarray()
             self.labels = self.distances.argmax(axis=1)
@@ -47,11 +47,11 @@ class SKMeans:
             for label in range(self.no_clusters):
                 indexes = np.where(self.labels == label)[0]
                 if len(indexes) > 0:
-                    self.centres[label] = input_matrix[indexes].mean(axis=0)
+                    self.centers[label] = input_matrix[indexes].mean(axis=0)
 
-    def sample_centres(self, input_matrix, no_samples):
+    def sample_centers(self, input_matrix, no_samples):
         '''
-            Function to sample centres from the input matrix.
+            Function to sample centers from the input matrix.
 
             PARAMETERS:
                 input_matrix (scipy.sparse or numpy.ndarray): Matrix containing input samples. It can either be a scipy sparse matrix or a numpy 2darray.
@@ -64,7 +64,7 @@ class SKMeans:
 
     def sample_kmeans(self, input_matrix):
         '''
-            Two pass k-means to sample centres in the first pass by running k-means on a small input. The second pass uses these centres to compute the centres on the entire data.
+            Two pass k-means to sample centers in the first pass by running k-means on a small input. The second pass uses these centers to compute the centers on the entire data.
 
             PARAMETERS:
                 input_matrix (scipy.sparse or numpy.ndarray): Matrix containing input samples. It can either be a scipy sparse matrix or a numpy 2darray.
@@ -74,19 +74,19 @@ class SKMeans:
         '''
         input_points, no_dimensions = input_matrix.shape
         no_samples = max(2*np.sqrt(input_points), 10*self.no_clusters)
-        sampled_input = self.sample_centres(input_matrix, int(no_samples))
-        self.centres = self.sample_centres(input_matrix, self.no_clusters)
+        sampled_input = self.sample_centers(input_matrix, int(no_samples))
+        self.centers = self.sample_centers(input_matrix, self.no_clusters)
         self.run_kmeans(sampled_input)
         self.run_kmeans(input_matrix)
 
-    def fit(self, input_matrix, sample=True, param_centres=None, two_pass=False):
+    def fit(self, input_matrix, sample=True, param_centers=None, two_pass=False):
         '''
             Function to input the data and call run_kmeans on it.
 
             PARAMETERS:
                 input_matrix (scipy.sparse or numpy.ndarray): Matrix containing input samples. It can either be a scipy sparse matrix or a numpy 2darray.
-                sample (boolean): By default set to True, this flag is used to sample centres from the input data. If set to False, a numpy array containing centre points should be passed to param_centres.
-                param_centres (scipy.sparse or numpy.ndarray): Is set to None by default. Should be passed a sparse matrix or numpy 2darray containing centre points, if sample is set to False.
+                sample (boolean): By default set to True, this flag is used to sample centers from the input data. If set to False, a numpy array containing centre points should be passed to param_centers.
+                param_centers (scipy.sparse or numpy.ndarray): Is set to None by default. Should be passed a sparse matrix or numpy 2darray containing centre points, if sample is set to False.
                 two_pass (boolean): By default set to Flase, set this flag to True to execute a two pass k-means. If set to True, this flag takes precedence over the sample flag and ignores its value.
 
             RETURNS: None
@@ -100,13 +100,29 @@ class SKMeans:
             return
 
         if sample:
-            self.centres = self.sample_centres(input_matrix, self.no_clusters)
+            self.centers = self.sample_centers(input_matrix, self.no_clusters)
         else:
-            if not param_centres:
-                raise ValueError("Must provide centre matrix if sample_centres is set to False.")
-            self.centres = param_centres/norm(param_centres,axis=1)
+            if not param_centers:
+                raise ValueError("Must provide centre matrix if sample_centers is set to False.")
+            self.centers = param_centers/norm(param_centers,axis=1)
         self.run_kmeans(input_matrix)
 
+    def cluster_new_data(self, new_data):
+        '''
+            Cluster new data using existing cluster centers.
+
+            PARAMETERS:
+                new_data (scipy.sparse or numpy.ndarray): Matrix containing new data samples. It can either be a scipy sparse matrix or a numpy 2darray.
+
+            RETURNS:
+                labels (list of ints): List containing cluster labels for each new data point.
+        '''
+        new_data_norm = norm(new_data, axis=1)
+        new_data_normalized = new_data / new_data_norm[:, np.newaxis]
+        distances = new_data_normalized.dot(self.centers.T)
+        labels = distances.argmax(axis=1)
+        return labels
+    
     def get_labels(self):
         '''
             Function to get cluster labels for each point in the input matrix.
@@ -131,7 +147,7 @@ class SKMeans:
         '''
         return self.distances
 
-    def get_centres(self):
+    def get_centers(self):
         '''
             Function to get centre arrays for each cluster.
 
@@ -139,8 +155,18 @@ class SKMeans:
                 None 
 
             RETURNS:
-                centres (numpy.ndarray): Numpy 2darray where each represents the centre of a cluster.
+                centers (numpy.ndarray): Numpy 2darray where each represents the centre of a cluster.
         '''
-        return self.centres
+        return self.centers
 
+    def set_centers(self, centers):
+        '''
+            Function to set centre arrays for each cluster.
 
+            PARAMETERS:
+                centers (numpy.ndarray): Numpy 2darray where each represents the centre of a cluster.
+
+            RETURNS:
+                None
+        '''
+        self.centers = np.array(centers)
