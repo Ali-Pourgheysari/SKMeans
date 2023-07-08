@@ -92,7 +92,7 @@ class SKMeans:
             RETURNS: None
 
         '''
-        row_norms = np.linalg.norm(input_matrix, axis=1)  # Calculate Euclidean norm along each row
+        row_norms = norm(input_matrix, axis=1)
         input_matrix = input_matrix / row_norms[:, np.newaxis]
 
         if two_pass:
