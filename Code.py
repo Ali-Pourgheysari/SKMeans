@@ -24,23 +24,6 @@ def load_txt_input(path):
     return info_matrix, file_names
 
 
-# Function to read input from csv files
-def load_csv_input(path):
-    info_matrix = []
-    file_names = []
-    
-    # open and read csv file
-    with open(path, 'r') as file:
-        for line in file:
-            row_list = []
-            for item in line.split(',')[1:]:
-                row_list.append(float(item))
-            info_matrix.append(row_list)
-            file_names.append(line.split(',')[0])
-
-    return info_matrix, file_names
-
-
 # Function to organize clusters
 def organizing_clusters(labels, file_names):
     # create dictionary of clusters
@@ -99,7 +82,6 @@ def main():
     # if new_embedding is not empty, do not run the kmeans algorithm again
     if not os.listdir('new_embedding/'):
 
-        # info_matrix, file_names = load_csv_input(path='embedding/output55.csv')
         info_matrix, file_names = load_txt_input(path='embedding/')
     
         # fit the model
