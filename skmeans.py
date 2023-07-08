@@ -123,6 +123,22 @@ class SKMeans:
         labels = distances.argmax(axis=1)
         return labels
     
+    def predict(self, input):
+        '''
+            Function to get cluster label of a single point.
+
+            PARAMETERS:
+                input (scipy.sparse or numpy.ndarray): A single point to be clustered. It can either be a scipy sparse matrix or a numpy 2darray.
+
+            RETURNS:
+                label (int): Cluster label of the input point.
+        '''
+        input_norm = norm(input)
+        input_normalized = input / input_norm
+        distances = input_normalized.dot(self.centers.T)
+        label = distances.argmax()
+        return label
+
     def get_labels(self):
         '''
             Function to get cluster labels for each point in the input matrix.
