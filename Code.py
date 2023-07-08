@@ -72,11 +72,11 @@ def save_in_txt(path, cluster_dict):
 
 def main():
 
-    no_iters = 10
+    no_iters = 50
     no_clusters = 10
 
     # info_matrix, file_names = get_csv_input(path='embedding/output55.csv')
-    info_matrix, file_names = get_txt_input(path='embedding/')
+    info_matrix, file_names = get_txt_input(path='embedding_hoopad_staff/')
 
     # create an instance of SKMeans class
     kmeans_inst = skmeans.SKMeans(no_clusters=no_clusters, iters=no_iters)
@@ -84,7 +84,8 @@ def main():
     # fit the model
     kmeans_inst.fit(info_matrix, two_pass=True)
 
-    labels = kmeans_inst.labels
+    labels = kmeans_inst.get_labels()
+    centres = kmeans_inst.get_centres()
 
     new_cluster_dict = organizing_clusters(labels, file_names)
     
