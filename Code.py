@@ -52,14 +52,6 @@ def organizing_clusters(labels, file_names):
         else:
             cluster_dict[labels[i]].append(file_names[i][:-4])
 
-    # # sort keys
-    # cluster_dict = {k: v for k, v in sorted(cluster_dict.items(), key=lambda item: item[0])}
-    
-    # # organize keys in a way that they start from 0 and go up to the number of clusters
-    # new_cluster_dict = {}
-    # for i, (key, value) in enumerate(cluster_dict.items()):
-    #     new_cluster_dict[i] =  value
-
     return cluster_dict
 
 
@@ -99,7 +91,7 @@ def load_centers(path):
 def main():
 
     no_iters = 50
-    no_clusters = 10
+    no_clusters = 5
 
     # create an instance of SKMeans class
     kmeans_inst = skmeans.SKMeans(no_clusters=no_clusters, iters=no_iters)
@@ -108,7 +100,7 @@ def main():
     if not os.listdir('new_embedding/'):
 
         # info_matrix, file_names = load_csv_input(path='embedding/output55.csv')
-        info_matrix, file_names = load_txt_input(path='embedding_hoopad_staff/')
+        info_matrix, file_names = load_txt_input(path='embedding/')
     
         # fit the model
         kmeans_inst.fit(info_matrix, two_pass=True)
