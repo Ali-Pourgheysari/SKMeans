@@ -106,22 +106,6 @@ class SKMeans:
                 raise ValueError("Must provide centre matrix if sample_centers is set to False.")
             self.centers = param_centers/norm(param_centers,axis=1)
         self.run_kmeans(input_matrix)
-
-    def cluster_new_data(self, new_data):
-        '''
-            Cluster new data using existing cluster centers.
-
-            PARAMETERS:
-                new_data (scipy.sparse or numpy.ndarray): Matrix containing new data samples. It can either be a scipy sparse matrix or a numpy 2darray.
-
-            RETURNS:
-                labels (list of ints): List containing cluster labels for each new data point.
-        '''
-        new_data_norm = norm(new_data, axis=1)
-        new_data_normalized = new_data / new_data_norm[:, np.newaxis]
-        distances = new_data_normalized.dot(self.centers.T)
-        labels = distances.argmax(axis=1)
-        return labels
     
     def predict(self, input):
         '''
