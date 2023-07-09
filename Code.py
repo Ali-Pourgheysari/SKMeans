@@ -77,7 +77,7 @@ class ClusterProcessor:
         return centers
 
 
-    def process_clusters(self, embedding_path, cluster_output_path, center_output_path, cluster_load_path, new_embedding_path=None):
+    def process_clusters(self, embedding_path, cluster_save_path, center_save_path, centers_load_path, new_embedding_path=None):
         # if new_embedding is not empty, do not run the kmeans algorithm again
         if not os.listdir('new_embedding/'):
 
@@ -91,7 +91,7 @@ class ClusterProcessor:
 
             new_cluster_dict = self.organizing_clusters(labels, file_names)
 
-            self.save_in_txt(cluster_path=cluster_output_path, center_path=center_output_path, cluster_dict=new_cluster_dict, centers=centers)
+            self.save_in_txt(cluster_path=cluster_save_path, center_path=center_save_path, cluster_dict=new_cluster_dict, centers=centers)
 
             for key in new_cluster_dict:
                 print(key, new_cluster_dict[key])
@@ -99,7 +99,7 @@ class ClusterProcessor:
 
             info_matrix, file_names = self.load_txt_input(path=new_embedding_path)
 
-            centers = self.load_centers(path=cluster_load_path)
+            centers = self.load_centers(path=centers_load_path)
             self.kmeans_inst.set_centers(centers)
 
             for i, item in enumerate(info_matrix):
@@ -113,8 +113,8 @@ def main():
     no_clusters = 5
 
     processor = ClusterProcessor(no_clusters, no_iters)
-    processor.process_clusters(embedding_path='embedding/', cluster_output_path='cluster_output/cluster', center_output_path='center_output/center', 
-                               cluster_load_path='center_output/', new_embedding_path='new_embedding/')
+    processor.process_clusters(embedding_path='embedding/', cluster_save_path='cluster_output/cluster', center_save_path='center_output/center', 
+                               centers_load_path='center_output/', new_embedding_path='new_embedding/')
 
     
 
